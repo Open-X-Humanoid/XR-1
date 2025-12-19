@@ -2,7 +2,7 @@
 
 # XR-1: Towards Versatile Vision-Language-Action Models via Learning Unified Vision-Motion Representations 
 
-a versatile and scalable vision-language-action framework. XR-1 supports robust multi-task learning across diverse robot embodiments and environments.
+A versatile and scalable vision-language-action framework: XR-1 supports robust multi-task learning across diverse robot embodiments and environments.
 
 > Shichao Fan<sup>1,\*</sup>, Kun Wu<sup>1,\*</sup>, Zhengping Che<sup>1,\*,&dagger;</sup>, Xinhua Wang<sup>1</sup>, Di Wu<sup>1,4</sup>, Fei Liao<sup>1</sup>, Ning Liu<sup>1</sup>, Yixue Zhang<sup>1</sup>, Zhen Zhao<sup>1</sup>, Zhiyuan Xu<sup>1</sup>, Meng Li<sup>1</sup>, Qingjie Liu<sup>3</sup>, Shanghang Zhang<sup>4</sup>, Min Wan<sup>2</sup>, Jian Tang<sup>1,&#9993;</sup>
 
@@ -17,7 +17,7 @@ a versatile and scalable vision-language-action framework. XR-1 supports robust 
 
 [![arXiv](https://img.shields.io/badge/arXiv-2511.02776-b31b1b.svg?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2511.02776) [![Project Page](https://img.shields.io/badge/Project-Page-green.svg?logo=github&logoColor=white)](https://xr-1-vla.github.io/)
 
-[\[📖 Document\]](#documents) [\[🚀 Quick Start\]](#-quick-start) [\[🤗 Model Zoo\]](#-model-zoo) [\[✅ Performance\]](#-performance-in-real-world) [\[🙋 FAQs\]](#-faqs)
+[\[📖 Document\]](#documents) [\[🚀 Quick Start\]](#-quick-start) [\[🤗 Models\]](#-model-zoo) [\[✅ Performance\]](#-performance-in-real-world) [\[🙋 FAQs\]](#-faqs)
 
 
 ![perform](.assets/images/xr1_teaser.png)
@@ -36,7 +36,7 @@ a versatile and scalable vision-language-action framework. XR-1 supports robust 
 <!-- > Coming Soon... -->
 ### 🎄 Use Custom Datasets
 <!-- > Coming Soon... -->
-## 🤗 Model Zoo
+## 🤗 Models
 <!-- > Coming Soon... -->
 
 ## ✅ Performance in Real-world
