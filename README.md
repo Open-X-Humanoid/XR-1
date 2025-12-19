@@ -1,4 +1,5 @@
 <div align="center">
+
 # XR-1: Towards Versatile Vision-Language-Action Models via Learning Unified Vision-Motion Representations (Under Review)
 
 a versatile and scalable vision-language-action framework. XR-1 supports robust multi-task learning across diverse robot embodiments and environments.
