@@ -1,53 +1,98 @@
-![](https://xr-1-vla.github.io/static/images/xr1_teaser.png)
+<div align="center">
+# XR-1: Towards Versatile Vision-Language-Action Models via Learning Unified Vision-Motion Representations (Under Review)
 
-## We introduce XR-1, a versatile and scalable vision-language-action framework. XR-1 supports robust multi-task learning across diverse robot embodiments and environments
+a versatile and scalable vision-language-action framework. XR-1 supports robust multi-task learning across diverse robot embodiments and environments.
 
-## Abstract
+> Shichao Fan<sup>1,\*</sup>, Kun Wu<sup>1,\*</sup>, Zhengping Che<sup>1,\*,&dagger;</sup>, Xinhua Wang<sup>1</sup>, Di Wu<sup>1,4</sup>, Fei Liao<sup>1</sup>, Ning Liu<sup>1</sup>, Yixue Zhang<sup>1</sup>, Zhen Zhao<sup>1</sup>, Zhiyuan Xu<sup>1</sup>, Meng Li<sup>1</sup>, Qingjie Liu<sup>3</sup>, Shanghang Zhang<sup>4</sup>, Min Wan<sup>2</sup>, Jian Tang<sup>1,&#9993;</sup>
 
-Recent progress in large-scale robotic datasets and vision-language models (VLMs) has advanced research on vision-language-action (VLA) models. However, existing VLA models still face two fundamental challenges: (i) producing precise low-level actions from high-dimensional observations, (ii) bridging domain gaps across heterogeneous data sources, including diverse robot embodiments and human demonstrations. Existing methods often encode latent variables from either visual dynamics or robotic actions to guide policy learning, but they fail to fully exploit the complementary multi-modal knowledge present in large-scale, heterogeneous datasets. In this work, we present X Robotic Model 1 (XR-1), a novel framework for versatile and scalable VLA learning across diverse robots, tasks, and environments. At its core, XR-1 introduces the Unified Vision-Motion Codes (UVMC), a discrete latent representation learned via a dual-branch VQ-VAE that jointly encodes visual dynamics and robotic motion. UVMC addresses these challenges by (i) serving as an intermediate representation between the observations and actions, and (ii) aligning multimodal dynamic information from heterogeneous data sources to capture complementary knowledge. To effectively exploit UVMC, we propose a three-stage training paradigm: (i) self-supervised UVMC learning, (ii) UVMC-guided pretraining on large-scale cross-embodiment robotic datasets, and (iii) task-specific post-training. We validate XR-1 through extensive real-world experiments with more than 14,000 rollouts on six different robot embodiments, spanning over 120 diverse manipulation tasks. XR-1 consistently outperforms state-of-the-art baselines such as $\\pi\_{0.5}$, $\\pi\_0$, RDT, UniVLA, and GR00T-N1.5 while demonstrating strong generalization to novel objects, background variations, distractors, and illumination changes.
+<sup>1</sup>Beijing Innovation Center of Humanoid Robotics,
+<sup>2</sup>School of Mechanical Engineering and Automation, Beihang University,
+<sup>3</sup>State Key Laboratory of Virtual Reality Technology and Systems, SCSE, Beihang University,
+<sup>4</sup>State Key Laboratory of Multimedia Information Processing, School of Computer Science, Peking University
 
-## Overview
+<sup>*</sup>Co-first authors,
+<sup>&dagger;</sup>Project leader,
+<sup>&#9993;</sup>Corresponding author,
 
-![](https://xr-1-vla.github.io/static/images/xr1_overview.png)
+[\[📄Paper\]](https://arxiv.org/abs/2511.02776)  [\[🔥Project Page\]](https://xr-1-vla.github.io/) [\[📖 Document\]](#documents) [\[🚀 Quick Start\]](#-quick-start) [\[🤗 Model Zoo\]](#-model-zoo) [\[✅ Performance\]](#-performance-in-real-world) [\[🙋 FAQs\]](#-faqs)
 
-Overview of XR-1. In XR-1, we introduce the *Unified Vision-Motion Codes (UVMC)*, a discrete latent representation that jointly encodes visual dynamics and robotic motion. XR-1 adopts a three-stage training paradigm to enable precise low-level control across diverse robots and tasks.
 
-## Experiment Setup
+[\[🔥Pre-train\]](#-pre-train-from-scratch) [\[🚀 Fine-tune\]](#-fine-tune-from-spatialvla) [\[🎄Custom Dataset\]](#-use-custom-datasets)
 
-![](https://xr-1-vla.github.io/static/images/xr1_exp_setup.png)
+![perform](.assets/images/xr1_teaser.png)
 
-Experimental Setup. We evaluate XR-1 across six robot embodiments(Tien Kung 1.0/2.0, Single-/Dual-Arm UR-5e, Dual-Arm Franka, and AgileX Cobot Magic 2.0), covering more than 120 manipulation tasks with over 14,000 rollouts.
+</div>
 
-## Comparison with Baselines
+## TODO List
 
-### Representative Tasks Comparison
+- [ ] Release pre-training / fine-tuning code for XR-1 series.
+- [ ] Release the code, model, and custom data of XR-1.
+- [ ] Release real world deloyment sample of XR-1
 
-We conducted evaluations on bimanual collaboration, dexterous manipulation, fluid/deformable object handling, contact-rich interactions, and dynamic environments. Our XR1 model was compared against baseline methods including RDT, π0.5, π0, GR00T-N1.5, and UniVLA. 
 
-## Experiment Result
+## Documents
+### 🚀 Quick Start
+> Coming Soon...
+### 🎄 Use Custom Datasets
+> Coming Soon...
 
-Main experiment: 6 different embodiments, with 20 tasks per embodiment, comparing results against RDT, π0.5, π0, GR00T-N1.5, and UniVLA baselines.
+## 🤗 Model Zoo
+> Coming Soon...
 
-**Dual-Arm UR-5e\_results**
 
-![](https://xr-1-vla.github.io/static/images/Dual-Arm%20UR-5e_results.png)
+## ✅ Performance in Real-world
+<table width="100%">
+  <tr>
+    <td align="center" width="50%">
+      <img src=".assets/images/Dual-Arm%20UR-5e_results.png" alt="Dual-Arm UR-5e">
+      <br><b>Dual-Arm UR-5e</b>
+    </td>
+    <td align="center" width="50%">
+      <img src=".assets/images/Tien%20Kung%202.0_results.png" alt="Tien Kung 2.0">
+      <br><b>Tien Kung 2.0</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src=".assets/images/tienkung1_results.png" alt="Tien Kung 1.0">
+      <br><b>Tien Kung 1.0</b>
+    </td>
+    <td align="center" width="50%">
+      <img src=".assets/images/Dual-Arm%20Franka_results.png" alt="Dual-Arm Franka">
+      <br><b>Dual-Arm Franka</b>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" width="50%">
+      <img src=".assets/images/AgileX%20Cobot%20Magic%20V2.0_results.png" alt="AgileX Cobot Magic V2.0">
+      <br><b>AgileX Cobot Magic V2.0</b>
+    </td>
+    <td align="center" width="50%">
+      <img src=".assets/images/Single-Arm%20UR-5e_results.png" alt="Single-Arm UR-5e">
+      <br><b>Single-Arm UR-5e</b>
+    </td>
+  </tr>
+</table>
 
-**Tien Kung 2.0\_results**
+## 🤗 FAQs
+If you encounter any issues, feel free to open an issue on GitHub or reach out through discussions. We appreciate your feedback and contributions! 🚀
 
-![](https://xr-1-vla.github.io/static/images/Tien%20Kung%202.0_results.png)
+## License
 
-**Tienkung1\_results**
+This project is released under the [MIT license](LICENSE). Parts of this project contain code and models from other sources, which are subject to their respective licenses.
 
-![](https://xr-1-vla.github.io/static/images/tienkung1_results.png)
+## Citation
 
-**Dual-Arm Franka\_results**
+If you find this project useful in your research, please consider cite:
 
-![](https://xr-1-vla.github.io/static/images/Dual-Arm%20Franka_results.png)
+```BibTeX
+@article{fan2025xr,
+  title={XR-1: Towards Versatile Vision-Language-Action Models via Learning Unified Vision-Motion Representations},
+  author={Fan, Shichao and Wu, Kun and Che, Zhengping and Wang, Xinhua and Wu, Di and Liao, Fei and Liu, Ning and Zhang, Yixue and Zhao, Zhen and Xu, Zhiyuan and others},
+  journal={arXiv preprint arXiv:2511.02776},
+  year={2025}
+}
+```
 
-**AgileX Cobot Magic V2.0\_results**
-
-![](https://xr-1-vla.github.io/static/images/AgileX%20Cobot%20Magic%20V2.0_results.png)
-
-**Single-Arm UR-5e\_results**
-
-![](https://xr-1-vla.github.io/static/images/Single-Arm%20UR-5e_results.png)
+## Acknowledgement
+XR-1 is built with reference to the code of the following projects: [Lerobot](https://github.com/huggingface/lerobot), [Moto](https://github.com/TencentARC/Moto), [QueST](https://github.com/pairlab/QueST) and [Pi0](https://github.com/Physical-Intelligence/openpi). Thanks for their awesome work!
