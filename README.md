@@ -1,6 +1,6 @@
 <div align="center">
 
-# XR-1: Towards Versatile Vision-Language-Action Models via Learning Unified Vision-Motion Representations (Under Review)
+# XR-1: Towards Versatile Vision-Language-Action Models via Learning Unified Vision-Motion Representations 
 
 a versatile and scalable vision-language-action framework. XR-1 supports robust multi-task learning across diverse robot embodiments and environments.
 
@@ -15,10 +15,10 @@ a versatile and scalable vision-language-action framework. XR-1 supports robust 
 <sup>&dagger;</sup>Project leader,
 <sup>&#9993;</sup>Corresponding author,
 
-[\[📄Paper\]](https://arxiv.org/abs/2511.02776)  [\[🔥Project Page\]](https://xr-1-vla.github.io/) [\[📖 Document\]](#documents) [\[🚀 Quick Start\]](#-quick-start) [\[🤗 Model Zoo\]](#-model-zoo) [\[✅ Performance\]](#-performance-in-real-world) [\[🙋 FAQs\]](#-faqs)
+[![arXiv](https://img.shields.io/badge/arXiv-2511.02776-b31b1b.svg?logo=arxiv&logoColor=white)](https://arxiv.org/abs/2511.02776) [![Project Page](https://img.shields.io/badge/Project-Page-green.svg?logo=github&logoColor=white)](https://xr-1-vla.github.io/)
 
+[\[📖 Document\]](#documents) [\[🚀 Quick Start\]](#-quick-start) [\[🤗 Model Zoo\]](#-model-zoo) [\[✅ Performance\]](#-performance-in-real-world) [\[🙋 FAQs\]](#-faqs)
 
-[\[🔥Pre-train\]](#-pre-train-from-scratch) [\[🚀 Fine-tune\]](#-fine-tune-from-spatialvla) [\[🎄Custom Dataset\]](#-use-custom-datasets)
 
 ![perform](.assets/images/xr1_teaser.png)
 
@@ -33,13 +33,11 @@ a versatile and scalable vision-language-action framework. XR-1 supports robust 
 
 ## Documents
 ### 🚀 Quick Start
-> Coming Soon...
+<!-- > Coming Soon... -->
 ### 🎄 Use Custom Datasets
-> Coming Soon...
-
+<!-- > Coming Soon... -->
 ## 🤗 Model Zoo
-> Coming Soon...
-
+<!-- > Coming Soon... -->
 
 ## ✅ Performance in Real-world
 <table width="100%">
