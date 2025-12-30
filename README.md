@@ -165,7 +165,7 @@ If you encounter any issues, feel free to open an issue on GitHub or reach out t
 
 ## License
 
-This project is released under the [MIT license](LICENSE). Parts of this project contain code and models from other sources, which are subject to their respective licenses.
+This project is released under the [Apache License](LICENSE). Parts of this project contain code and models from other sources, which are subject to their respective licenses.
 
 ## Citation
 
