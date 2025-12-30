@@ -1,0 +1,190 @@
+from dataclasses import dataclass, field
+
+from lerobot.common.optim.optimizers import AdamWConfig
+from lerobot.common.optim.schedulers import (
+    CosineDecayWithWarmupSchedulerConfig,
+)
+from lerobot.configs.policies import PreTrainedConfig
+from lerobot.configs.types import FeatureType, NormalizationMode, PolicyFeature
+from lerobot.common.datasets.utils import (
+    MULTIROBOT_TEMPLATE_FEATURES, 
+    MULTIROBOT_TEMPLATE_FEATURES_WITH_PAD
+)
+@PreTrainedConfig.register_subclass("xr1_stage2")
+@dataclass
+class Xr1Stage2Config(PreTrainedConfig):
+
+    stage1_pretrained_path: str = None
+    stage2_pretrained_path: str = None
+    stage2_latent_image_token_check: bool = False
+    dataset_stats_generate: bool = False
+    heterogeneous: bool = True
+    split_dataset: bool = False
+    real_robot_dev: bool = False    
+
+    cut_off_action: bool = True
+
+    small_sample: bool = False
+    small_sample_rate: int = 20
+    downsample_factor: int = 1
+    image_interval_steps: int = 50 # image interval frames
+
+
+    #stage1 supervised model config
+    stage1_supervised: bool = True # ablation study 
+    action_latent_token_num: int = 13
+    mformer_hidden_size: int = 768
+    decoder_hidden_size: int = 768
+    codebook_embed_dim: int = 256
+    codebook_k_size: int = 256
+    action_branch: bool = True
+    vision_branch: bool = True
+    combine_codebook: bool = False
+
+
+
+    action_chunk_size: int = 50
+    n_obs_steps: int = 2
+    n_action_steps: int = 50
+    normalization_mapping: dict[str, NormalizationMode] = field(
+        default_factory=lambda: {
+            "VISUAL": NormalizationMode.IDENTITY,
+            "STATE": NormalizationMode.MEAN_STD,
+            "ACTION": NormalizationMode.MEAN_STD,
+        }
+    )
+    # resampler
+    resampler: bool = True
+    resampler_dim: int = 2048
+    resampler_depth: int = 3
+    resampler_dim_head: int = 128
+    resampler_heads: int = 4
+    resampler_num_media_embeds: int = 1
+    resampler_num_latents: int = 9
+
+    # Shorter state and action vectors will be padded
+    max_state_dim: int = 32
+    max_action_dim: int = 32
+
+    # Image preprocessing
+    resize_imgs_with_padding: tuple[int, int] = (224, 224)
+
+    # Add empty images. Used by pi0_aloha_sim which adds the empty
+    # left and right wrist cameras in addition to the top camera.
+    empty_cameras: int = 0
+
+    # Converts the joint and gripper values from the standard Aloha space to
+    # the space used by the pi internal runtime which was used to train the base model.
+    adapt_to_pi_aloha: bool = False
+
+    # Converts joint dimensions to deltas with respect to the current state before passing to the model.
+    # Gripper dimensions will remain in absolute values.
+    use_delta_joint_actions_aloha: bool = False
+
+    # Tokenizer
+    tokenizer_max_length: int = 48
+
+    # Projector
+    proj_width: int = 1024
+
+    # Decoding
+    num_steps: int = 10
+
+    # Attention utils
+    use_cache: bool = True
+    attention_implementation: str = "eager"  # or fa2, flex
+
+    # Finetuning settings
+    freeze_vision_encoder: bool = True
+    freeze_language_encoder: bool = True
+    train_expert_only: bool = True
+
+    train_state_proj: bool = True
+
+    # Training presets
+    optimizer_lr: float = 1e-4
+    optimizer_betas: tuple[float, float] = (0.9, 0.95)
+    optimizer_eps: float = 1e-8
+    optimizer_weight_decay: float = 1e-10
+
+    scheduler_warmup_steps: int = 5_000
+    scheduler_decay_steps: int = 100_000
+    scheduler_decay_lr: float = 1e-6
+
+
+    # TODO: Add EMA
+
+    def __post_init__(self):
+        super().__post_init__()
+        if self.stage1_pretrained_path == None and self.stage1_supervised:
+            raise ValueError("stage1_pretrained_path is required")
+
+
+        """Input validation (not exhaustive)."""
+        if self.n_action_steps > self.action_chunk_size:
+            raise ValueError(
+                f"The chunk size is the upper bound for the number of action steps per model invocation. Got "
+                f"{self.n_action_steps} for `n_action_steps` and {self.action_chunk_size} for `action_chunk_size`."
+            )
+        # if self.n_obs_steps != 1:
+        #     raise ValueError(
+        #         f"Multiple observation steps not handled yet. Got `nobs_steps={self.n_obs_steps}`"
+        #     )
+
+        if self.use_delta_joint_actions_aloha:
+            raise NotImplementedError(
+                "`use_delta_joint_actions_aloha` is used by pi0 for aloha real models. It is not ported yet in LeRobot."
+            )
+        if self.stage2_pretrained_path is not None:
+            self.pretrained_path = self.stage2_pretrained_path
+        else:
+            self.pretrained_path = None
+    
+    def validate_features(self) -> None:
+        # TODO: implement value error
+        # if not self.image_features and not self.env_state_feature:
+        #     raise ValueError("You must provide at least one image or the environment state among the inputs.")
+
+        for i in range(self.empty_cameras):
+            key = f"observation.images.empty_camera_{i}"
+            empty_camera = PolicyFeature(
+                type=FeatureType.VISUAL,
+                shape=(3, 480, 640),
+            )
+            self.input_features[key] = empty_camera
+
+    def get_optimizer_preset(self) -> AdamWConfig:
+        return AdamWConfig(
+            lr=self.optimizer_lr,
+            betas=self.optimizer_betas,
+            eps=self.optimizer_eps,
+            weight_decay=self.optimizer_weight_decay,
+        )
+
+    def get_scheduler_preset(self):
+        return CosineDecayWithWarmupSchedulerConfig(
+            peak_lr=self.optimizer_lr,
+            decay_lr=self.scheduler_decay_lr,
+            num_warmup_steps=self.scheduler_warmup_steps,
+            num_decay_steps=self.scheduler_decay_steps,
+        )
+
+    @property
+    def observation_delta_indices(self) -> list:
+        return list(range(0, self.n_obs_steps * self.image_interval_steps, self.image_interval_steps))[:self.n_obs_steps]
+
+
+    @property
+    def action_delta_indices(self) -> list:
+        return list(range(self.action_chunk_size))
+
+    @property
+    def reward_delta_indices(self) -> None:
+        return None
+
+    @property
+    def get_template_features(self):
+        if self.n_obs_steps > 1:
+            return MULTIROBOT_TEMPLATE_FEATURES_WITH_PAD
+        else:
+            return MULTIROBOT_TEMPLATE_FEATURES
