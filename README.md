@@ -30,6 +30,9 @@ A versatile and scalable vision-language-action framework: XR-1 supports robust 
 - [x] Release pre-trained model, and heterogeneous dataset sample of XR-1 on both HuggingFace and ModelScope.
 - [ ] Release real world deloyment sample of XR-1.
 
+## Model Download
+- [huggingface](https://huggingface.co/collections/X-Humanoid/xr-1)
+- [modelscope](https://modelscope.cn/collections/X-Humanoid/XR-1)
 
 ## Documents
 This repository is built upon a fork of [Lerobot](https://github.com/huggingface/lerobot). Please note that due to the rapid updates of Lerobot, our implementation is specifically aligned with **Lerobot dataset v2.1**. We have preserved the original directory structure to facilitate further development and integration for the community.
