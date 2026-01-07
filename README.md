@@ -185,3 +185,9 @@ If you find this project useful in your research, please consider cite:
 
 ## Acknowledgement
 XR-1 is built with reference to the code of the following projects: [Lerobot](https://github.com/huggingface/lerobot), [Moto](https://github.com/TencentARC/Moto), [QueST](https://github.com/pairlab/QueST) and [Pi0](https://github.com/Physical-Intelligence/openpi). Thanks for their awesome work!
+
+## Discussions
+If you're interested in XR-1, welcome to join our WeChat group for discussions.
+
+<img src="./assets/images/qrocde.png" border=0 width=30%>
+
