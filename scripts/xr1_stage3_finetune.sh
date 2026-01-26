@@ -42,7 +42,7 @@ if [ "$MODE" == "debug" ]; then
         --dataset.select_dataset=$DATASET \
         --batch_size=16 \
         --save_freq=20 \
-        --output_dir=./debug_output/ 
+        --output_dir=./debug_output/$DATASET/
 else
     echo "Starting in REAL TRAINING mode with dataset: $DATASET..."
     accelerate launch --num_processes 1 lerobot/scripts/train_humanoid_multigpu.py \

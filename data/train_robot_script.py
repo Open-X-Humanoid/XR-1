@@ -117,6 +117,24 @@ def select_xr1_dataset_Dual_Arm_Franka():
     }
     return ALL_TASK_CONFIG
 
+def select_xr1_dataset_Dual_Arm_Tien_Kung2():
+    root = "../dataset/XR-1-Dataset-Sample"
+    '''DUAL_ARM_TIEN_KUNG2'''
+    task_config_dual_arm_tien_kung2 = get_task_config(f"{root}/DUAL_ARM_TIEN_KUNG2", "humanoid_station")
+
+    TASK_CONFIGS = [
+            # '''dual_arm_tien_kung2'''
+            task_config_dual_arm_tien_kung2,
+    ]
+
+    ALL_TASK_CONFIG = {
+        'multi_task': [cfg['multi_task'] for cfg in TASK_CONFIGS],
+        'sample_weights': [cfg['sample_weights'] for cfg in TASK_CONFIGS],
+    }
+    return ALL_TASK_CONFIG
+
+
+
 def section_dataset(select_dataset: str, repo_ids=None):
 
     if select_dataset == "XR_1_DATASET_SAMPLE":
@@ -127,6 +145,9 @@ def section_dataset(select_dataset: str, repo_ids=None):
         return ALL_TASK_CONFIG
     elif select_dataset == "XR_1_DATASET_DUAL_ARM_FRANKA":
         ALL_TASK_CONFIG = select_xr1_dataset_Dual_Arm_Franka()
+        return ALL_TASK_CONFIG
+    elif select_dataset == "XR_1_DATASET_DUAL_ARM_TIEN_KUNG2":
+        ALL_TASK_CONFIG = select_xr1_dataset_Dual_Arm_Tien_Kung2()
         return ALL_TASK_CONFIG
     
     raise ValueError(f"Invalid dataset selection: {select_dataset}")

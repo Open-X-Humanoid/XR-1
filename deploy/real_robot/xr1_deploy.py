@@ -2,6 +2,13 @@ from lerobot.common.policies.xr1.modeling_xr1_stage2 import Xr1Stage2Policy
 import numpy as np
 import torch, cv2
 import torch.nn.functional as F
+
+
+def get_fake_encoded_img():
+    raw_img = (np.random.rand(480, 640, 3) * 255).astype(np.uint8)
+    _, encoded_img = cv2.imencode('.jpg', raw_img)
+    return encoded_img
+
 class XR1_Evaluation(): 
     def __init__(self,model_path,robot_type,check_image_recons=False,real_robot_dev=False,dataset_stats_path=None,action_horizon=50,exp_weight=0.05,sampled_action_factor=1,ensemble=True):
         self.device = "cuda"
@@ -75,11 +82,33 @@ class XR1_Evaluation():
         action_queue = self.policy.select_action(observation,action_horizon=self.action_horizon)  
         return action_queue
 
+    def Inference_Dual_Arm_Tien_Kung2(self, obs, task_name):
+        observation = dict()
+        observation["task"] = [task_name]
 
-def xr1_deploy():
-    robot_type = "franka_dual" # deploy type: franka_dual
-    model_name = "debug_output" # model output path
-    task_name = "franka_dr3_stack_the_bowl" # task file name in sample dataset
+        # images
+        for cam_name in ['head']:
+            cam_img = obs['images'][cam_name]
+            cam_img = cv2.imdecode(cam_img, cv2.IMREAD_COLOR)
+            cam_img_resize = cv2.resize(cam_img, dsize=(640,480)) 
+            cam_img_resize = torch.from_numpy(cam_img_resize).to(torch.float32)/255
+            cam_img_resize = cam_img_resize.permute(2,0,1)
+            cam_img_resize = cam_img_resize.unsqueeze(0).to(self.device)
+            cam_img_resize = self.resize_with_pad(cam_img_resize, *self.policy.config.resize_imgs_with_padding, pad_value=0)
+            observation["observation.images.image_0"] = cam_img_resize
+            
+        # state
+        state_arm_left = torch.from_numpy(obs["arm_joints"]['left']).unsqueeze(0).to(self.device)
+        state_arm_right = torch.from_numpy(obs["arm_joints"]['right']).unsqueeze(0).to(self.device)
+        state_hand_left = torch.from_numpy(np.array(obs["hand_joints"]['left'])).unsqueeze(0).to(self.device)
+        state_hand_right = torch.from_numpy(np.array(obs["hand_joints"]['right'])).unsqueeze(0).to(self.device)
+        observation["observation.state.arm_joint_position"] = torch.cat([state_arm_left,state_arm_right],dim=1)
+        observation["observation.state.hand_joint_position"] = torch.cat([state_hand_left,state_hand_right],dim=1)
+
+        action_queue = self.policy.select_action(observation,action_horizon=self.action_horizon) 
+        return action_queue
+
+def xr1_deploy(robot_type,task_name, language_instruction, model_name):
 
     action_horizon=50 # action horizon
     exp_weight=0.05 # exp weight
@@ -95,41 +124,77 @@ def xr1_deploy():
 
     # fake data
     episode_len = 500
-    episode_qpos_arm_hand = np.random.rand(episode_len, 16).astype(np.float32)
-    language_instruction = "stack the bowl"
 
+    
     for index in range(episode_len):
+        if robot_type == "franka_dual":
+            episode_qpos_arm_hand = np.random.rand(episode_len, 16).astype(np.float32)
 
-        def get_fake_encoded_img():
-            raw_img = (np.random.rand(480, 640, 3) * 255).astype(np.uint8)
-            _, encoded_img = cv2.imencode('.jpg', raw_img)
-            return encoded_img
+            fake_left_image = get_fake_encoded_img()
+            fake_right_image = get_fake_encoded_img()
+            fake_top_image = get_fake_encoded_img()
+            fake_front_image = get_fake_encoded_img()
+            fake_wrist_left_image = get_fake_encoded_img()
+            fake_wrist_right_image = get_fake_encoded_img()
 
-        fake_left_image = get_fake_encoded_img()
-        fake_right_image = get_fake_encoded_img()
-        fake_top_image = get_fake_encoded_img()
-        fake_front_image = get_fake_encoded_img()
-        fake_wrist_left_image = get_fake_encoded_img()
-        fake_wrist_right_image = get_fake_encoded_img()
+            fake_obs = {
+                'images': {
+                    'left': fake_left_image,
+                    'right': fake_right_image,
+                    'top': fake_top_image,
+                    'front': fake_front_image,
+                    'wrist_left': fake_wrist_left_image,
+                    'wrist_right': fake_wrist_right_image
+                },
+                'arm_joints': {
+                    'left': episode_qpos_arm_hand[index][:8],
+                    'right': episode_qpos_arm_hand[index][8:]
+                },
+            }
+            if pred_action_queue_num == 0:
+                pred_action_queue = xr1_eval.Inference_Dual_Arm_Franka(fake_obs,language_instruction)
+            pred_action = pred_action_queue.popleft()
+            pred_action_queue_num = len(pred_action_queue)
+            print("pred_action: ", pred_action)
 
-        fake_obs = {
-            'images': {
-                'left': fake_left_image,
-                'right': fake_right_image,
-                'top': fake_top_image,
-                'front': fake_front_image,
-                'wrist_left': fake_wrist_left_image,
-                'wrist_right': fake_wrist_right_image
-            },
-            'arm_joints': {
-                'left': episode_qpos_arm_hand[index][:7],
-                'right': episode_qpos_arm_hand[index][7:]
-            },
-        }
-        if pred_action_queue_num == 0:
-            pred_action_queue = xr1_eval.Inference_Dual_Arm_Franka(fake_obs,language_instruction)
-        pred_action = pred_action_queue.popleft()
-        pred_action_queue_num = len(pred_action_queue)
-        print("pred_action: ", pred_action)
+        elif robot_type == "dual_arm_tien_kung2":
+            episode_qpos_arm = np.random.rand(episode_len, 14).astype(np.float32)
+            episode_qpos_hand = np.random.rand(episode_len, 2).astype(np.float32) # means left right gripper
+            fake_head_image = get_fake_encoded_img()
+            fake_obs = {
+                'images': {
+                    'head': fake_head_image
+                },
+                'arm_joints': {
+                    'left': episode_qpos_arm[index][:7],
+                    'right': episode_qpos_arm[index][7:]
+                },
+                'hand_joints': {
+                    'left': episode_qpos_hand[index][:1],
+                    'right': episode_qpos_hand[index][1:]
+                },
+            }
+            if pred_action_queue_num == 0:
+                pred_action_queue = xr1_eval.Inference_Dual_Arm_Tien_Kung2(fake_obs,language_instruction)
+            pred_action = pred_action_queue.popleft()
+            pred_action_queue_num = len(pred_action_queue)
+            print("pred_action: ", pred_action)
+        else:
+            raise ValueError(f"Invalid robot type: {robot_type}")
+
+
+
 if __name__ == "__main__":
-    xr1_deploy()
+    # Franka
+    # robot_type = "franka_dual" 
+    # task_name = "franka_dr3_stack_the_bowl" 
+    # language_instruction = "stack the bowl"
+    # model_name = "debug_output/XR_1_DATASET_DUAL_ARM_FRANKA"
+
+    # Tienkung2
+    robot_type = "dual_arm_tien_kung2" 
+    task_name = "tienkung_pro2_dualArm-gripper-1cameras_2_pick_and_press_green_button" 
+    language_instruction = "press the green button"
+    model_name= "debug_output/XR_1_DATASET_DUAL_ARM_TIEN_KUNG2"
+
+    xr1_deploy(robot_type,task_name, language_instruction, model_name)

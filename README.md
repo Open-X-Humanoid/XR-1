@@ -121,7 +121,10 @@ bash scripts/xr1_stage2_pretrain.sh
 We provide a streamlined workflow to deploy and verify XR-1 on various robotic platforms, including Franka, UR, and Agilex. The following example demonstrates the process using a Franka dual-arm robot:
 ``` bash
 # 1. Perform Fast Fine-tuning to train a specific Stage 3 model
+# Franka
 bash scripts/xr1_stage3_finetune.sh --debug --dataset XR_1_DATASET_DUAL_ARM_FRANKA
+# Or Tienkung2
+bash scripts/xr1_stage3_finetune.sh --debug --dataset XR_1_DATASET_DUAL_ARM_TIEN_KUNG2
 # 2. Execute the deployment script
 python deploy/real_robot/xr1_deploy.py
 ```

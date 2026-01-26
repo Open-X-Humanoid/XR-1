@@ -255,6 +255,19 @@ class Xr1Stage2Policy(PreTrainedPolicy):
             self.unnormalize_outputs = Unnormalize(output_features, self.config.normalization_mapping, dataset_stats).to(device)
             self.normalize_inputs = Normalize(input_features, self.config.normalization_mapping, dataset_stats).to(device)
             self.normalization = True
+        
+        elif 'dual_arm_tien_kung2' in robot_type:
+            self.config.action_feature.shape = (dataset_stats['action.arm_joint_position']['mean'].shape[0] + dataset_stats['action.hand_joint_position']['mean'].shape[0],)
+            action_arm_feature = PolicyFeature(type=FeatureType.ACTION, shape=dataset_stats['action.arm_joint_position']['mean'].shape)
+            action_hand_feature = PolicyFeature(type=FeatureType.ACTION, shape=dataset_stats['action.hand_joint_position']['mean'].shape)
+            state_arm_feature = PolicyFeature(type=FeatureType.STATE, shape=dataset_stats['observation.state.arm_joint_position']['mean'].shape)
+            state_hand_feature = PolicyFeature(type=FeatureType.STATE, shape=dataset_stats['observation.state.hand_joint_position']['mean'].shape)
+
+            output_features = {'action.arm_joint_position':action_arm_feature,'action.hand_joint_position':action_hand_feature}
+            input_features={'observation.state.arm_joint_position':state_arm_feature,'observation.state.hand_joint_position':state_hand_feature}
+            self.unnormalize_outputs = Unnormalize(output_features, self.config.normalization_mapping, dataset_stats).to(device)
+            self.normalize_inputs = Normalize(input_features, self.config.normalization_mapping, dataset_stats).to(device)
+            self.normalization = True
         else:
             raise ValueError(f"Invalid robot type: {robot_type}")
 
@@ -266,6 +279,10 @@ class Xr1Stage2Policy(PreTrainedPolicy):
         if self.normalization:
             if 'franka' in self.robot_type:
                 batch['observation.state'] = self.normalize_inputs({"observation.state.arm_joint_position": batch['observation.state.arm_joint_position']})["observation.state.arm_joint_position"]
+            elif 'dual_arm_tien_kung2' in self.robot_type:
+                norm_state_arm  = self.normalize_inputs({"observation.state.arm_joint_position": batch['observation.state.arm_joint_position']})["observation.state.arm_joint_position"]
+                norm_state_hand = self.normalize_inputs({"observation.state.hand_joint_position": batch['observation.state.hand_joint_position']})["observation.state.hand_joint_position"]
+                batch['observation.state'] = torch.cat([norm_state_arm, norm_state_hand],dim=-1)
             else:
                 raise ValueError(f"Invalid robot type: {self.robot_type} in normalization")
         images, img_masks = self.prepare_all_images(batch)
@@ -295,6 +312,10 @@ class Xr1Stage2Policy(PreTrainedPolicy):
         if self.normalization:
             if 'franka' in self.robot_type:
                 actions = self.unnormalize_outputs({"action.arm_joint_position": actions})["action.arm_joint_position"]
+            elif 'dual_arm_tien_kung2' in self.robot_type:
+                actions_arm = self.unnormalize_outputs({"action.arm_joint_position": actions[:,:,:14]})["action.arm_joint_position"]
+                actions_hand = self.unnormalize_outputs({"action.hand_joint_position": actions[:,:,14:]})["action.hand_joint_position"]
+                actions = torch.cat([actions_arm,actions_hand],dim=-1)
             else:
                 raise ValueError(f"Invalid robot type: {self.robot_type} in normalization")
         sub_actions = actions[:,::self.sampled_action_factor,:]

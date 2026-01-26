@@ -10,7 +10,7 @@ from lerobot.common.utils.utils import (
 import time
 
 # Dataset configuration
-select_dataset = "XR_1_DATASET_SAMPLE"
+select_dataset = "XR_1_DATASET_DUAL_ARM_TIEN_KUNG2"
 ALL_TASK_CONFIG = section_dataset(select_dataset)
 
 fake_config = Xr1Stage1Config()
