@@ -1,6 +1,7 @@
 <div align="center">
 
 # XR-1: Towards Versatile Vision-Language-Action Models via Learning Unified Vision-Motion Representations 
+***ICML2026 Oral***
 
 A versatile and scalable vision-language-action framework: XR-1 supports robust multi-task learning across diverse robot embodiments and environments.
 
@@ -78,7 +79,7 @@ Then, to obtain the **XR-1-Stage1-UVMC** and **XR-1-Stage2-Pretrain** models for
 # Huggingface
 bash scripts/hf_xr1_pretrain_model_download.sh
 # Or ModelScope
-bash modelscope_xr1_pretrain_model_download.sh
+bash scripts/modelscope_xr1_pretrain_model_download.sh
 ```
 
 ## 📖 Training Recipe
@@ -178,11 +179,11 @@ This project is released under the [Apache License](LICENSE). Parts of this proj
 If you find this project useful in your research, please consider cite:
 
 ```BibTeX
-@article{fan2025xr,
+@inproceedings{fan2025xr,
   title={XR-1: Towards Versatile Vision-Language-Action Models via Learning Unified Vision-Motion Representations},
   author={Fan, Shichao and Wu, Kun and Che, Zhengping and Wang, Xinhua and Wu, Di and Liao, Fei and Liu, Ning and Zhang, Yixue and Zhao, Zhen and Xu, Zhiyuan and others},
-  journal={arXiv preprint arXiv:2511.02776},
-  year={2025}
+  booktitle = {Proceedings of the International Conference on Machine Learning (ICML)},
+  year      = {2026}
 }
 ```
 
