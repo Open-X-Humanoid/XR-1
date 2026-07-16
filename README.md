@@ -1,10 +1,3 @@
-<p align="center">
-  <a href="https://opensource.x-humanoid-cloud.com/plugin.php?id=keke_video_base&ac=course&cid=14">
-    <img src="./assets/images/从数据到智能：RoboMIND驱动夸本体机器人操作的未来.png" width="700">
-  </a>
-</p>
-
-<div align="center">
 
 # XR-1: Towards Versatile Vision-Language-Action Models via Learning Unified Vision-Motion Representations 
 ***ICML2026 Oral***
